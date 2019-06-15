@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-
+import io from 'socket.io-client';
 import api from '../../services/api';
 
 import './Feed.css';
@@ -9,23 +9,38 @@ import like from '../../assets/like.svg';
 import comment from '../../assets/comment.svg';
 import send from '../../assets/send.svg';
 
-
 class Feed extends Component {
-
   state = {
-    feed: [],
+    feed: []
   };
 
+  registreToSocket() {
+    const socket = io('http://localhost:8888');
+    socket.on('posts', x => {
+      this.setState({feed: [x, ...this.state.feed]});
+    })
+     socket.on('like', x => {
+      this.setState({
+        feed: this.state.feed.map(post => post._id === x._id ? x : post)
+      });
+    })
+  }
+
   async componentDidMount() {
-    const response = await api.get('posts');
+    this.registreToSocket();
+    const response = await api.get("posts");
     this.setState({ feed: response.data });
+  }
+
+  handleLike(id) {
+    api.post(`/posts/${id}/like`);
   }
 
   render() {
     return (
       <section id="post-list">
-        {this.state.feed.map(x => (
-          <article>
+        {this.state.feed.map((x, i) => (
+          <article key={x._id}>
             <header>
               <div className="user-info">
                 <span>{x.author}</span>
@@ -36,7 +51,9 @@ class Feed extends Component {
             <img src={`http://localhost:8888/files/${x.image}`} alt="logo" />
             <footer>
               <div className="actions">
-                <img src={like} alt="" />
+                <button type="button" onClick={() => this.handleLike(x._id)} >
+                  <img src={like} alt="" className={x.likes > 0 ? 'ccv': ''}/>
+                </button>
                 <img src={comment} alt="" />
                 <img src={send} alt="" />
               </div>
@@ -47,7 +64,7 @@ class Feed extends Component {
               </p>
             </footer>
           </article>
-        ))};
+        ))}
       </section>
     );
   }

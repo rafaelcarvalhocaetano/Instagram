@@ -44,6 +44,12 @@ section#post-list article footer .actions {
   margin-bottom: 10px;
 }
 
+section#post-list article footer .actions button {
+  background-color: transparent;
+  border: 0;
+  cursor: pointer;
+}
+
 section#post-list article footer .actions img {
   height: 20px;
   margin-right: 10px;
@@ -56,6 +62,14 @@ section#post-list article footer p {
 }
 
 section#post-list article footer p span {
- color: #79787e;
- display: block;
+  color: #79787e;
+  display: block;
+}
+
+@media(max-width: 650px) {
+  section#post-list {
+    width: 100%;
+    max-width: 580px;
+    margin-top: 75px;
+  }
 }
