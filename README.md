@@ -6,3 +6,6 @@
  - React
  - React Native
  - NodeJS
+ 
+ - Back-End: https://backend-instagram.herokuapp.com
+ - Front-End: https://cl-instagram.herokuapp.com/
